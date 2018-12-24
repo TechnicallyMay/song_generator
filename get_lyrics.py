@@ -32,13 +32,11 @@ def get_all_songs(artist):
             page_num += 1
         else:
             page_num = -1
-
     lyrics = {}
     print("Found the following songs:")
     for site in sites:
         page = BeautifulSoup(site.text, 'html.parser')
         not_allowed = ['remix', 'mix', 'remaster', 'remastered', 'version', 'live', 'spanish']
-
         #Finds all links to songs
         for link in page.find_all('a'):
             lnk = link.get('href')
@@ -66,6 +64,7 @@ def get_all_songs(artist):
                         print(name)
                         lyrics[name] = words
     return lyrics
+
 
 def get_lyrics(link):
     website = requests.get(link)
