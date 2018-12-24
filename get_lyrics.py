@@ -13,8 +13,7 @@ def format_url(str):
 def get_song(song, artist):
     song = format_url(song)
     artist = format_url(artist)
-    url = 'http://www.metrolyrics.com/'+ song +  '-lyrics-' + artist + '.html'
-
+    url = 'http://www.metrolyrics.com/' + song +  '-lyrics-' + artist + '.html'
     return get_lyrics(url)
 
 #Finds all lyrics from artist
@@ -32,13 +31,11 @@ def get_all_songs(artist):
             page_num += 1
         else:
             page_num = -1
-
     lyrics = {}
     print("Found the following songs:")
     for site in sites:
         page = BeautifulSoup(site.text, 'html.parser')
         not_allowed = ['remix', 'mix', 'remaster', 'remastered', 'version', 'live', 'spanish']
-
         #Finds all links to songs
         for link in page.find_all('a'):
             lnk = link.get('href')
@@ -48,11 +45,11 @@ def get_all_songs(artist):
             #Removes metrolyrics so we can check if the link contains the string 'lyrics'
             tst = lnk.replace('http://www.metrolyrics.com/', '')
             #Additional checks to make sure link leads to lyrics
-            if (    'lyrics' in tst
-                and 'https' not in tst
-                and '?' not in tst
-                and "correction" not in tst
-                and artist in tst):
+            if ('lyrics' in tst
+                     and 'https' not in tst
+                     and '?' not in tst
+                     and "correction" not in tst
+                     and artist in tst):
                 #Checks if any of the not allowed words are in the song title
                 allowed = True
                 for word in not_allowed:
@@ -96,12 +93,10 @@ def get_song_name(link):
             split_indeces.append(i)
 
     name = header[split_indeces[0] + 1 : split_indeces[1]]
-
     return(" ".join(name))
 
 #Removes parts of lyrics enclosed in brackets, e.g. [Chorus]
 def clean_lyrics(lyrics):
     lyrics = lyrics.split()
     lyrics = [lyric for lyric in lyrics if '[' not in lyric and ']' not in lyric]
-
     return " ".join(lyrics)
