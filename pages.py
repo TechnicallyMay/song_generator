@@ -2,6 +2,7 @@ import get_lyrics
 from markov import MarkovChain
 
 class Page():
+    
     def __init__(self, name, key, to):
         #Name of page
         self.name = name
@@ -12,6 +13,7 @@ class Page():
         #Where the page came from, set by other page objects
         self.back = None
 
+
     def show_options(self):
         for p in self.to:
             print("Press '%s' for %s" % (p.key.upper(), p.name))
@@ -20,6 +22,7 @@ class Page():
         if 'prompt' in dir(self):
             print("Press 'F' to %s" % self.name)
         self.get_page_input()
+
 
     def get_page_input(self):
         print()
@@ -41,16 +44,17 @@ class Page():
             print('Invalid choice, try again')
             self.show_options()
 
-            
+
     def go_back(self):
         self.back.show_options()
 
-        
+
 class GetLyricsPage(Page):
+
     def __init__(self, name, key, to):
         super().__init__(name, key, to)
 
-        
+
     def prompt(self):
         print()
         artist = input('Which artist? ')
@@ -59,12 +63,13 @@ class GetLyricsPage(Page):
         print(get_lyrics.get_song(song, artist))
         print()
 
-        
+
 class GetArtistPage(Page):
+
     def __init__(self, name, key, to):
         super().__init__(name, key, to)
 
-        
+
     def prompt(self):
         print()
         artist = input('Which artist? ')
@@ -75,13 +80,14 @@ class GetArtistPage(Page):
             print(lyrics)
             print()
 
-            
+
 class MarkovPage(Page):
+
     def __init__(self, name, key, to):
         super().__init__(name, key, to)
         self.new_chain()
 
-        
+
     def prompt(self):
         print()
         prompting = True
@@ -98,7 +104,7 @@ class MarkovPage(Page):
                 print('Invalid choice')
         self.options()
 
-        
+
     def options(self):
         choice = input("Would you like to generate lyrics (G), clear artists (C), add new artists (A), or go back (B)? ").lower()
         if choice == 'g':
@@ -115,7 +121,7 @@ class MarkovPage(Page):
             print("Invalid choice")
             self.options()
 
-            
+
     def add_artist(self, artist):
         lyrics = get_lyrics.get_all_songs(artist)
         for song in lyrics.values():
@@ -123,7 +129,7 @@ class MarkovPage(Page):
         print()
         print("Lyrics added!")
 
-        
+
     def gen_song(self):
         new_song = " ".join(self.mc.generate_text())
         print()
@@ -131,6 +137,6 @@ class MarkovPage(Page):
         print()
         self.options()
 
-        
+
     def new_chain(self):
         self.mc = MarkovChain()
