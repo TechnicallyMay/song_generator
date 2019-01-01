@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 
-#Formats strings to be used in a URL
+
 def format_url(str):
     remove = ["-", "'"]
     for char in remove:
@@ -9,14 +9,14 @@ def format_url(str):
     str = str.replace(" ", "-")
     return(str.lower())
 
-#Finds lyrics for song and artist
+
 def get_song(song, artist):
     song = format_url(song)
     artist = format_url(artist)
     url = 'http://www.metrolyrics.com/' + song +  '-lyrics-' + artist + '.html'
     return get_lyrics(url)
 
-#Finds all lyrics from artist
+
 def get_all_songs(artist):
     artist = format_url(artist)
     sites = []
@@ -68,35 +68,30 @@ def get_all_songs(artist):
 def get_lyrics(link):
     website = requests.get(link)
     code = website.status_code
-    #Makes sure no HTML errors
     if code != requests.codes.ok:
         return
     soup = BeautifulSoup(website.text, 'html.parser')
     txt = soup.find_all('p', {"class":"verse"})
-    #Removes HTML tags, splits each list into words
     txt = [part.text.split() for part in txt]
     #Splits list of lists into one list
     txt = [word for part in txt for word in part]
-    #Concatenates each word to one string
     lyrics = " ".join(txt)
     lyrics = clean_lyrics(lyrics)
     return lyrics
 
-#Finds the name of song from a link
+
 def get_song_name(link):
     website = requests.get(link)
     soup = BeautifulSoup(website.text, 'html.parser')
     header = soup.find('h1').text.split()
-
     split_indeces = []
     for i, part in enumerate(header):
         if part == '-' or part == 'Lyrics':
             split_indeces.append(i)
-
     name = header[split_indeces[0] + 1 : split_indeces[1]]
     return(" ".join(name))
 
-#Removes parts of lyrics enclosed in brackets, e.g. [Chorus]
+
 def clean_lyrics(lyrics):
     lyrics = lyrics.split()
     lyrics = [lyric for lyric in lyrics if '[' not in lyric and ']' not in lyric]
